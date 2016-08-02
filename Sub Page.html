@@ -1,0 +1,151 @@
+<div id="gb-page" class="sp">
+	<nav class="hidden" id="mobile-sidebar-links">
+		<div>
+			<div class="gb-quick-links hidden">
+				<p class="sidebar-icon"><span class="hidden">Quick Links</span> <span class="icon closed-icon"></span><span class="icon-close open-icon"></span></p>
+				<div class="inner">
+					
+				</div>
+			</div>
+			<div class="custom-dropdown gb-translate">
+				<p class="sidebar-icon"><span class="icon-translate"></span><span class="hidden">Translate</span></p>
+				<ul class="dropdown"></ul>
+			</div>
+			<ul class="strip-ul social-media">
+				<li class="<SWCtrl controlname="Custom" props="Name:facebookSwitch" /> sidebar-icon"><a href="<SWCtrl controlname="Custom" props="Name:facebookUrl" />" alt="Facebook"><span class="icon-facebook"></span><span class="hidden">Facebook Link</span></a>
+				<li class="<SWCtrl controlname="Custom" props="Name:twitterSwitch" /> sidebar-icon"><a href="<SWCtrl controlname="Custom" props="Name:twitterUrl" />" alt="Twitter"><span class="icon-twitter"></span><span class="hidden">Twitter Link</span></a>
+			</ul>
+		</div>
+	</nav>
+	<header>
+		<section id="gb-custom-mystart">
+			<div class="inner max-width ui-clear inline-children">
+				<div class="left inline-children clear-logo">
+					<div id="gb-logo">
+						<a class="logo" href="/[$SITEALIAS$]" title="[$SiteName$]">
+							<img src="<SWCtrl controlname="Custom" props="Name:logoImg" />" alt="[$SiteName$]" />
+						</a>
+					</div>
+					<div class="active">
+						<a href="/" alt="District Home" title="District Home" class="mystart-icon"><span class="icon-home"></span><span class="hidden"></span></a>
+					</div>
+					<div>
+						<a href="<SWCtrl controlname="Custom" props="Name:calendarUrl" />" alt="Calendar Link" title="Calendar Link" class="mystart-icon"><span class="icon-calendar"></span><span class="hidden">Calendar Link</span></a>
+					</div>
+					<div class="custom-dropdown" id="gb-school-dropdown">
+						<p title="Schools Menu"><span class="icon-school mystart-icon"></span><span class="hidden">School Links</span></p>
+						<ul class="dropdown">
+						</ul>
+					</div>
+				</div>
+				<div class="right inline-children">
+					[$IF LOGGED IN$]
+						<div class="custom-dropdown right" id="gb-user-options">
+							<p class="mystart-label">User Options</p>
+							<ul class="dropdown">
+							</ul>
+						</div>
+					[$ELSE IF LOGGED$]
+						<div id="custom-mystart-register">
+						</div>
+						<div id="custom-mystart-signin">
+						</div>
+					[$END IF LOGGED IN$]
+					<div id="gb-search-cont" class="hide640">
+						<span class="icon-search" onclick="SWGoToSearchResultsPageswsitesearchtxtsearchstring()"></span>
+						[$Search$]
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="gb-header">
+			<div class="inner max-width">
+				<div class="gb-schoolname clear-logo">
+					<h1><SWCtrl controlname="Custom" props="Name:schoolName" /></h1>
+					<h2><SWCtrl controlname="Custom" props="Name:schoolTag" /></h2>
+				</div>
+				<div class="inline-children hide768" id="gb-header-links">
+					<ul class="inline-children strip-ul social-media">
+						<li class="<SWCtrl controlname="Custom" props="Name:facebookSwitch" />"><a href="<SWCtrl controlname="Custom" props="Name:facebookUrl" />" alt="Facebook"><span class="icon-facebook"></span><span class="hidden">Facebook Link</span></a>
+						<li class="<SWCtrl controlname="Custom" props="Name:twitterSwitch" />"><a href="<SWCtrl controlname="Custom" props="Name:twitterUrl" />" alt="Twitter"><span class="icon-twitter"></span><span class="hidden">Twitter Link</span></a>
+					</ul>
+					<div class="custom-dropdown right gb-translate">
+						<p><span class="icon-translate"></span>Translate</p>
+						<ul class="dropdown"></ul>
+					</div>
+				</div>
+			</div>
+		</section>
+	</header>
+	
+	<nav id="gb-quick-links-cont">
+		<div class="inline-children">
+		</div>
+	</nav>
+	
+	<nav id="gb-channel-list-outer">
+		<section id="mega-school-sections-cont" class="hidden">
+			<div class="max-width inline-children" id="mega-school-sections">
+			</div>
+		</section>
+		<section class="max-width" id="gb-channel-list">
+			[$ChannelListNavigation props="DisplayType:Text;SectionMax:<SWCtrl controlname="Custom" props="Name:sectionMax" />;DirectoryType:6;DisplayHomeButton:<SWCtrl controlname="Custom" props="Name:showHomeChannel" />;DisplayCalendarButton:<SWCtrl controlname="Custom" props="Name:showCalendarChannel" />;HideSingleSectionDD:<SWCtrl controlname="Custom" props="Name:hideSingleSectionDD" />"$]
+			<div class="gb-quick-links hide640">
+				<p class="label">Quick Links <span class="icon closed-icon"></span><span class="icon-close open-icon"></span></p>
+				<div class="inner">
+					
+				</div>
+			</div>
+		</section>
+	</nav>
+	
+	
+	
+	<main id="sp-content-outer">
+		<section id="sp-content" class="ui-clear max-width">
+			<div class="sp column one noprint hide480">
+				<div class="ui-widget-header section-name-fix"> <!-- Added by Jeremy - Case #00191270 -->
+					<h1>[$SectionName$]</h1>
+				</div>
+				[$PageListNavigation props="DisplayHeading:No;"$] <!-- Changed to No by Jeremy - Case #00191270 -->
+			</div>
+			<div class="sp column two">
+				[$ContentLayoutPlaceholder$]
+			</div>
+		</section>
+	</main>
+	
+	
+	
+	<footer>
+		<section id="gb-footer-outer">
+			<div id="gb-footer" class="ui-clear max-width">
+				<div class="gb footer one">
+					<h1><SWCtrl controlname="Custom" props="Name:schoolName" /></h1>
+					<p>[$SiteAddressOne$] [$SiteCity$], [$SiteState$] [$SiteZip$]</p>	
+				</div>
+				<div class="gb footer two">
+					<p>Phone: [$SiteContactPhone$] <span class="break-line-320"></span> Fax: [$SiteContactFax$]</p>
+				</div>
+				<div class="gb footer three inline-children">
+					<ul class="inline-children strip-ul social-media">
+						<li class="<SWCtrl controlname="Custom" props="Name:facebookSwitch" />"><a href="<SWCtrl controlname="Custom" props="Name:facebookUrl" />" alt="Facebook"><span class="icon-facebook"></span><span class="hidden">Facebook Link</span></a>
+						<li class="<SWCtrl controlname="Custom" props="Name:twitterSwitch" />"><a href="<SWCtrl controlname="Custom" props="Name:twitterUrl" />" alt="Twitter"><span class="icon-twitter"></span><span class="hidden">Twitter Link</span></a>
+					</ul>
+					<a href="/privacypolicy" alt="Privacy Policy">Privacy Policy</a>
+					<div id="sitemap-link">[$SiteMapLink$]</div>
+				</div>
+			</div>
+		</section>
+		<section class="ui-clear" id="gb-footer-legal-outer">
+			<div id="gb-footer-legal" class="max-width">
+				<div id="legal">
+					<a id="feedback" href="#">Questions or Feedback?</a>
+					<a id="policy" href="#">Privacy Policy</a>
+					<a id="terms" href="#">Terms of Use</a>
+					<p id="copyright"></p>
+				</div>
+			</div>
+		</section>
+	</footer>
+</div>

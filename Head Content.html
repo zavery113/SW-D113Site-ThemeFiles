@@ -1,0 +1,687 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<!--DOC Google Font Link 
+ This template utilizes web-safe fonts and relys on fallbacks. There are no Google fonts being used in this template.
+-->
+
+
+<!-- PLUGINS -->
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/creative/responsive/creative-responsive-menu-v2/creative.responsive.menu.v2.min.js"></script>
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/creative/responsive/creative-responsive-pagelist-menu-v2/creative.responsive.pagelist.menu.v2.min.js"></script>
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/creative/rotate/cs.rs.multimedia.rotator.v2.min.js"></script>
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/joel/mod-events/joel.mod-events.min.js"></script>
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/creative/tools/creative-icons-v3/creativeIcons.v3.min.js"></script>
+<script type="text/javascript" src="/cms/lib010/IL01904711/Centricity/template/18/scripts/jquery.dotdotdot.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//extend.schoolwires.com/creative/scripts/creative/tools/creative-icons-v3/css/creativeIcons.min.css" />
+
+<script type="text/javascript" src="//extend.schoolwires.com/creative/scripts/creative/tools/head.min.js"></script>
+<!-- END PLUGINS -->
+
+
+<script type="text/javascript">
+	var defaultLogoSrc = "/cms/lib010/IL01904711/Centricity/Template/18/images/township-logo.png";
+	$(window).load(function(){
+		searchText();
+		calendarListView();
+		setupBullets(); //must be called here so that the actually bullets will exist. They get added by a system function sometime on-ready
+		
+		//clear logo
+		$('.clear-logo').animate({'padding-left': $('#gb-logo').outerWidth()}, 500);
+		
+			//moves all of the bullets to the left of the links label
+		$('.app.navigation .ui-widget-detail > ul li').each(function(k, v){
+			$('> .bullet', v).siblings('a').after($('> .bullet', v));
+		});
+		
+		$('#magic-line').stop().animate({
+			left: $('#gb-logo').outerWidth() + 15
+		});    
+	});
+	
+	$(function(){
+		$(window).bind("resize", function(){ pgScreenSize(); calendarListView(); });
+		
+		// RESPONSIVE MAIN MENU
+		$("body").csRsMenu({
+		        "breakPoint"            : 640, // SYSTEM BREAK POINTS - 768, 640, 480, 320
+			"slideDirection"        : "left-to-right", // OPTIONS - left-to-right, right-to-left   
+			"primaryColor"          : "#2C363E", // DEFAULT - #2C363E
+			"secondaryColor"        : "#222A30", // DEFAULT - #222A30
+			"accentColor"           : "#B5BBBF", // DEFAULT - #B5BBBF
+			"menuButtonParent"      : "#gb-channel-list",
+			"showMenuBtnText"       : "yes",
+			"menuBtnText"           : "Menu <span class=\"icon-menu-handle\"></span>",
+			"showSchools"           : "yes",
+			"showTranslate"         : "yes",
+			"translateId"           : "none",
+			"showAccount"           : "yes",
+			"extraMenuOptions"      : "", // EXTRA MENU HEADING NAMES SEPARATED BY A ;
+			"extraMenuItems"        : "", // EXTRA MENU BUTTONS - STRUCTURE IS: MENU-OPTION-NUMBER, ITEM-NAME, ITEM-URL, ITEM-TARGET;
+			"siteID"                : "[$SiteID$]"
+		});
+		
+		// RESPONSIVE PAGELIST MENU
+		$("body").csRsPagelistMenu({
+		        "breakPoint"            : 480, // SYSTEM BREAK POINTS - 768, 640, 480, 320
+			"slideDirection"        : "left-to-right", // OPTIONS - left-to-right, right-to-left
+			"primaryColor"          : "#2C363E", // DEFAULT - #2C363E
+			"secondaryColor"        : "#222A30", // DEFAULT - #222A30
+			"accentColor"           : "#B5BBBF", // DEFAULT - #B5BBBF
+			"menuButtonParent"      : "#sp-content",
+			"showMenuBtnText"       : "yes",
+			"menuBtnText"           : "PAGES",
+			"siteID"                : "[$SiteID$]"
+		});
+		
+		pgScreenSize();
+		useChannelForSection();
+		dynamicContent();
+		customDropdowns('icon-arrow-up', 'icon-arrow-down');	
+		modEvents();
+		megaMenuStuff();	
+		addFramesetTranslate();
+		sameHeights('.sw-channel-item', '.sw-channel-item > a');
+		sameHeights('.channel-section', '.channel-section', true, true);
+		articleCardTextConstrain();
+	});	
+	
+//SKELETON
+	function pgScreenSize(){
+		var getWidth = $(window).width();
+		
+		if (getWidth < 1024){ //Mobile BPs
+			appView();
+		}
+		
+		if( getWidth >= 768 ){ //run on 768 and up
+			$('#gb-channel-list-outer').off('click').click(function(e){
+				$('#mega-school-sections-cont').slideToggle();
+				smoothScroll('#gb-channel-list-outer', 0);
+			});
+		}else{
+			$('#gb-channel-list-outer').off('click');
+		}
+		
+		if( getWidth >= 640 ){ //640bp and up
+			sameHeights('.sw-channel-item', '.sw-channel-item > a');
+			sameHeights('.channel-section', '.channel-section', true, true);
+		}
+		
+		multimediaRotator( { transitionSpeed: 1, transitionDelay: 5} );
+		
+		$('#gb-quick-links-cont').animate({'padding-top': $('header').outerHeight() + 80}, 150);
+		
+		//clear logo
+		$('.clear-logo').animate({'padding-left': $('#gb-logo').outerWidth()}, 500);
+		
+		//reposition the magic line
+		$('#magic-line').stop().animate({
+			left: $('#gb-logo').outerWidth() + 15
+		}); 
+
+		//overrideRotatorHeight( $(".rs-gallery-container").first(), 190 ); //rotator height override
+
+	}
+	
+	function overrideRotatorHeight(el, bottomOffset) {
+		//el = Containing element for the multimedia rotator
+		//bottomOffset = number of pixels to show below the rotator
+		
+		if (el.length) { //if there is a Multimedia rotator, continue, otherwise, exit
+			var viewPortHeight = $(window).height(),
+			rotatorTopOffset   = el.offset().top,
+			rotatorHeight      = viewPortHeight - (rotatorTopOffset + bottomOffset),
+			rotatorImageHeight = el.children(".rs-gallery-images").first().height();
+			
+			//check if the container is taller than the photos (i.e. browser resized down)
+			if (rotatorHeight > rotatorImageHeight) { rotatorHeight = rotatorImageHeight; }  //use the height calculated from the Rotator instead
+		
+			el.height(rotatorHeight);
+			el.parent().height(rotatorHeight);
+		}
+	}
+	
+	function articleCardTextConstrain() {
+		var paragraphsToConstrain = $("#sw-app-headlines div.card-info div").dotdotdot();
+		paragraphsToConstrain.dotdotdot();
+	}
+	
+	function multimediaRotator(){
+		if(!$("#sw-content-container10.region.ui-hp .rs-gallery-container").length){
+			// MULTIMEDIA ROTATOR
+			$("#sw-content-container10.ui-hp div.ui-widget.app.cs-rs-multimedia-rotator").csRsMultimediaRotator({
+				"imageWidth"              : 1500,
+				"imageHeight"             : 754,
+				"efficientLoad"           : "yes",
+				"appHeader"               : "no",
+				"titles"                  : "yes",
+				"captions"                : "yes",
+				"galleryOverlay"          : "no",
+				"linkedElement"           : ["image"], // ["image", "title", "overlay", "all"]
+				"playPause"               : "no",
+				"mainControls"            : "no",
+				"contMoreLink"            : "no",
+				"contMoreLinkText"        : "Read More",
+				"descMoreLink"            : "yes",
+				"descMoreLinkText"        : "LEARN MORE <span class=\"icon-thick-arrow icon-font\"></span>",
+				"bullets"                 : "yes",
+				"bulletControls"          : "yes",
+				"thumbnails"              : "no",
+				"thumbnailWidth"          : 122,
+				"thumbnailHeight"         : 53,
+				"thumbnailSlideDirection" : "horizontal", // horizontal or vertical
+				"hoverPause"              : "yes",
+				"autoRotate"              : "yes",
+				"fullScreenRotator"       : "no", // image dimensions work well at 1500x915
+				"fullScreenBreakpoints"   : ["960"], // OPTIONS ARE ["960", "768", "640", "480", "320"]
+				"fullScreenVideo"         : "no",
+				"transitionType"          : "fade", // fade or slide
+				"transitionSpeed"         : 1,
+				"transitionDelay"         : 5,
+				"onImageLoad"             : function() { },
+				"allImagesLoaded"         : function() { },
+				"onThumbnailLoad"         : function() { },
+				"allThumbnailsLoaded"     : function() { },
+				"onTransitionStart"       : function() { },
+				"onTransitionEnd"         : function() { },
+				"watchVidClick"           : function() { },
+				"closeVidClick"           : function() { },
+				"allLoaded"               : function() {
+					$('#hp-slideshow .rs-gallery-desc, \
+						#hp-slideshow .rs-gallery-bullets').addClass('max-width');
+					
+					$('#hp-slideshow .rs-gallery-desc')
+						.append('<div class="rs-gallery-desc-inner"></div>')
+						.children()
+						.appendTo($('#hp-slideshow .rs-gallery-desc .rs-gallery-desc-inner'));
+					
+					$('#hp-slideshow .rs-gallery-bullet-control.back').addClass("icon-thin-arrow point-left");
+					$('#hp-slideshow .rs-gallery-bullet-control.next').addClass("icon-thin-arrow");
+				}
+			});
+			
+		}
+	}
+	
+	function modEvents(){
+	    if (!$(".upcomingevents .joel-month").length) {
+	        $(".upcomingevents").modEvents({
+	            columns     : "yes",
+	            monthLong   : "yes",
+	            dayWeek     : "no"
+	        });
+		eventsByDay(".upcomingevents .ui-articles");       
+	    }
+	    
+	    $('.upcomingevents .ui-articles').addClass('ui-clear');
+	}
+	 
+	function eventsByDay(container) {
+		var countLi = 0;
+		$("li", container).each(function(){
+			if (!$(this).find("h1.ui-article-title.sw-calendar-block-date").size()){
+				var prevDate = $(this).prev().find("h1.ui-article-title.sw-calendar-block-date").html();
+			
+				$('.ui-article', this).addClass('upcoming-column-container ui-clear').prepend('<div class="upcoming-column left"><h1 class="ui-article-title sw-calendar-block-date">' + prevDate + '</h1></div>');
+				$('.ui-article-description', this).wrap('<div class="upcoming-column right"></div>');
+			};
+		});
+	    
+	   	$(".ui-article", container).each(function(){
+			var newDateTime = $('.upcoming-column.left h1', this).html().toLowerCase().split("</span>");
+			var dayName = newDateTime[0].split(">");
+			
+			if( dayName[0] != 'undefined' ){
+				//add a zero to the date if it is a single digit
+				if( newDateTime[1].length == 1 ) newDateTime[1] = "0" + newDateTime[1];
+				
+				//wrap the date in a new tag
+				var newDate = '<span class="jeremy-date">' + newDateTime[1] + '</span>';
+				
+				//manipulate the month to only allow a max of 4 letters in the month name
+				var newMonth = newDateTime[0].split('>');
+				
+				newMonth = ((newMonth[1].length > 4 ) ? newMonth[1].substr(0, 3) : newMonth[1]);
+				
+				//add in the month
+				newDate += '<span class="joel-month">' + newMonth + '</span>';
+				
+				//append the date and month back into their columns
+				$('.upcoming-column.left h1', this).html(newDate);	
+				
+				
+				//add an ALL DAY label if no time was given
+				$('.upcoming-column.right .ui-article-description', this).each(function(){
+					if( $('.sw-calendar-block-time', this).length < 1 ){ //if it doesnt exist add it
+						$(this).prepend('<span class="sw-calendar-block-time">ALL DAY</span>');
+					}
+				});
+			}
+		});
+	}
+	
+	function appView(){
+		//DOC dont add app into accordion if it doesnt have a header
+		$("#hp-content div.ui-widget.app").each(function() {
+			if($(".ui-widget-header", this).hasClass("ui-helper-hidden") || jQuery.trim($(".ui-widget-header h1", this).text()) == "") {
+				$(this).addClass("no-header");
+			}else{
+				if( $('.ui-widget-header h1 span.accordion-handle', this).length <= 0){
+					$('.ui-widget-header h1', this).append('<span class="accordion-handle hide960 show768">+</span>');
+				}
+			}
+		});
+		
+		//DOC accordion header click
+		$("#hp-content div.ui-widget-header").off('click').click(function(){
+			var clickedApp = $(this).parent().parent().attr("id");
+			
+			$("#hp-content div.ui-widget.app").removeClass("active");
+			$(this).parent().addClass("active");
+			
+			smoothScroll("#" + clickedApp, 10);
+		});
+	}	
+	
+	function useChannelForSection(){
+		//DOC use channel name for pagelistnavigation header if one is not present
+		if(!$("div.sp.column.one .ui-widget-header h1").length > 0) {
+			$("div.sp.column.one .ui-widget-header").append("<h1>[$ChannelName$]</h1>");
+		}
+        }
+        
+	function dynamicContent(){
+		// ********** MYSTART ********** //
+	//SKELETON
+		if($(".sw-mystart-button.signin").length > 0){
+			$('#custom-mystart-signin').append($(".sw-mystart-button.signin").html() + "<span class=\"icon-font icon-lock\"></span>");
+			$('#custom-mystart-signin a').addClass('mystart-label').text("Log In");
+			
+			if($(".sw-mystart-button.register").length > 0){ 
+				$('#custom-mystart-register').append($(".sw-mystart-button.register").html());
+				$('#custom-mystart-register a').addClass('mystart-label');
+			}
+		}
+		if($('.sw-mystart-button.manage').length > 0){
+			$('#gb-user-options ul').append("<li>" + $('.sw-mystart-button.manage').html() + "</li>");
+		}
+		if($('#sw-mystart-mypasskey').length > 0){
+			$('#sw-mystart-mypasskey > a').addClass('mystart-label');
+			$('#sw-mystart-mypasskey').removeClass('sw-mystart-button').prependTo("#gb-custom-mystart > .inner > .right");
+		}
+		$('#sw-myaccount-list li').appendTo('#gb-user-options ul');
+		
+		$('.sw-mystart-dropdown.schoollist ul li').clone().appendTo('#gb-school-dropdown ul');
+		
+		
+		var $el, leftPos, newWidth,
+		$mainNav = $("#gb-custom-mystart .inner > div.left");
+		
+		$mainNav.append("<div id='magic-line'></div>");
+		var $magicLine = $("#magic-line");
+		
+		$magicLine
+			.width($(" > div.active", $mainNav).width())
+			.css("left", $(" > div.active", $mainNav).position().left)
+			.data("origWidth", $magicLine.width());
+		
+		$(" > div:not(#gb-logo)", $mainNav).hover(function() {
+			$el = $(this);
+			leftPos = $el.position().left;
+			newWidth = $el.width();
+			$magicLine.stop().animate({
+				left: leftPos,
+				width: newWidth
+			});
+		}, function() {
+			$magicLine.stop().animate({
+				left: $('#gb-logo').outerWidth() + 15,
+				width: $magicLine.data("origWidth")
+			});    
+		});
+		
+		// ********** HEADER ********** //
+		
+		$('.gb-quick-links, #gb-quick-links-cont').click(function(e){
+			e.stopPropagation();
+			$("#gb-quick-links-cont").toggleClass('now-open');
+			$('.gb-quick-links').toggleClass('now-open');
+		});
+		
+		$('#gb-quick-links-cont > div').click(function(e){ e.stopPropagation(); });
+		
+		$("#gb-quick-links-cont > div").creativeIcons({
+		        "iconNum"       : "<SWCtrl controlname="Custom" props="Name:numOfIcons" />", // NUMBER OF ICONS
+		        "icons"         : [
+		                ["<SWCtrl controlname="Custom" props="Name:icon01Image" />", "<SWCtrl controlname="Custom" props="Name:icon01Text" />", "<SWCtrl controlname="Custom" props="Name:icon01Link" />", "<SWCtrl controlname="Custom" props="Name:icon01Target" />"], // ARRAY ORDER - IMAGE, TEXT, LINK, TARGET
+		                ["<SWCtrl controlname="Custom" props="Name:icon02Image" />", "<SWCtrl controlname="Custom" props="Name:icon02Text" />", "<SWCtrl controlname="Custom" props="Name:icon02Link" />", "<SWCtrl controlname="Custom" props="Name:icon02Target" />"], // ARRAY ORDER - IMAGE, TEXT, LINK, TARGET
+		                ["<SWCtrl controlname="Custom" props="Name:icon03Image" />", "<SWCtrl controlname="Custom" props="Name:icon03Text" />", "<SWCtrl controlname="Custom" props="Name:icon03Link" />", "<SWCtrl controlname="Custom" props="Name:icon03Target" />"], // ARRAY ORDER - IMAGE, TEXT, LINK, TARGET
+		                ["<SWCtrl controlname="Custom" props="Name:icon04Image" />", "<SWCtrl controlname="Custom" props="Name:icon04Text" />", "<SWCtrl controlname="Custom" props="Name:icon04Link" />", "<SWCtrl controlname="Custom" props="Name:icon04Target" />"] // ARRAY ORDER - IMAGE, TEXT, LINK, TARGET
+		        ],
+		        "siteID"        : "[$SiteID$]",
+		        "siteAlias"     : "[$SiteAlias$]",
+		        "calendarLink"  : "[$SiteCalendarLink$]",
+		        "contactEmail"  : "[$SiteContactEmail$]",
+		        "allLoaded"     : function(){}
+		});
+		
+		//DOC add logo
+		var logoSrc = jQuery.trim("<SWCtrl controlname="Custom" props="Name:logoImg" />");
+		var srcSplit = logoSrc.split("/");
+		var srcSplitLen = srcSplit.length;
+		if((logoSrc != "") && (srcSplit[srcSplitLen - 1] != "default-man.jpg")) {
+			$("#gb-logo > a.logo img").attr('src', logoSrc);
+		}else{
+			$("#gb-logo > a.logo img").attr('src', defaultLogoSrc);
+		}
+		
+		
+		// ********** CHANNEL BAR ********** //
+		//DOC add first class to first channel item
+		$("li.sw-channel-item").first().addClass("first");
+		//DOC add last class to last channel item
+		$("li.sw-channel-item").last().addClass("last");
+		
+		//Overwrite system hover functionality for an animated version.
+		$('#channel-navigation > .sw-channel-item > a').off('touchstart');
+	//SKELETON
+		$(".sw-channel-item").unbind('hover');
+		$(".sw-channel-item").hover(function(){ //in
+			var subList = $(this).children('ul');
+			if ($.trim(subList.html()) !== "") {
+				subList.slideDown(200, "swing");
+			}
+			$(this).addClass("hover");
+		}, function(){ //out
+			$(".sw-channel-dropdown").slideUp(200, "swing");
+			$(this).removeClass("hover");
+		});
+		
+		
+		// ********** BODY ********** //
+		//DOC rename first breadcrumb
+		$("li.ui-breadcrumb-first > a > span").text("Home");
+		//DOC replace more-link text
+		$("a.more-link span").text("View All");
+		//DOC auto-focus username signin field
+		$("#swsignin-txt-username").focus();
+		//DOC center signed out message and signin button
+        	if($("div.ui-spn > div > p > span").text() == "You have been signed out."){
+        		$("div.ui-spn > div").css({"text-align" : "center", "padding" : "50px 0px 50px 0px"});
+        		//DOC add signed out breadcrumb
+        		$(".ui-breadcrumbs").append("<li class='ui-breadcrumb-last'>Signed Out</li>");
+        	}
+        	
+        	//DOC add sign in breadcrumb
+        	if($("#swlogin").length){
+        		$(".ui-breadcrumbs").append("<li class='ui-breadcrumb-last'>Sign In</li>");
+        	}
+        	
+        	//DOC add read full story button to each headline
+        	$(".ui-widget.app.headlines").each(function(){
+        		$(".ui-article", this).each(function(){
+        			var headlineURL = $("h1 a", this).attr("href");
+        			$(".ui-article-description", this).append('<a class="custom-read-more" href="' + headlineURL + '">Read Full Story »</a>');
+        		});
+        	});
+        	
+        	if( $('.hp').length > 0 ){
+        		$("#sw-content-container3.region.ui-hp .headlines .ui-article > .clear").before('<div class="card-info"><div></div></div>');
+			
+			$("#sw-content-container3.region.ui-hp .headlines .ui-article").each(function(k, v){
+				$(this).children().each(function(k1, v1){
+					if(["ui-article-thumb", "clear" , "card-info"].indexOf($(this).attr('class')) < 0){
+						if( $('.custom-read-more', v1).length > 0 ){
+							$('.card-info', v).append('<a href="' + $('.custom-read-more', v1).attr('href') + '" class="card-thumb-search icon-search-alt hidden"><span class="hidden">Read more</span></a>');
+							$('.custom-read-more', v1).text('+').appendTo($('.card-info', v));
+						}
+						$(this).appendTo($('.card-info > div', v));
+					}
+				});
+			});
+        	}
+        	
+		// ********** FOOTER ********** //
+		//DOC get Schoolwires footer links
+		$("a#feedback").attr("href", $("div#sw-footer-links li:eq(0) a").attr("href"));
+		$("a#terms").attr("href", $("div#sw-footer-links li:eq(2) a").attr("href"));
+		$("a#policy").attr("href", $("div#sw-footer-links li:eq(1) a").attr("href"));		
+		$("p#copyright").text($('#sw-footer-copyright').text());
+		
+		// ******* APPS ******* //
+		
+		$('.view-calendar-link span').text('View Full Calendar');
+	}
+	
+	function searchText() {
+		var defSearchText = "Site Search";
+		
+	        var searchBox = $('#gb-search-cont input[type="text"]');
+	        searchBox.removeAttr("placeholder");
+		searchBox.attr("value", defSearchText);
+		searchBox.focus(function() {
+			if($(this).val() == defSearchText) {
+				$(this).val("");
+			}
+		});
+		searchBox.blur(function() {
+			if($(this).val() == "") {
+				$(this).val(defSearchText);
+			}
+		});
+	}
+	
+	function calendarListView(){
+		//DOC auto click function for schoolwires calendar list view for small mobile devices
+		if(!$(".ui-widget.app.calendar #calendarlist-pnl-specialview.loaded").length){
+			$("a.ui-btn-toggle.list").click();
+			$("a.ui-btn-toggle.month").click();
+			$(".ui-widget.app.calendar #calendarlist-pnl-specialview").addClass("loaded");
+		}
+		
+		var getWidth = $(window).width();
+		if(getWidth >= 640){ // 640+
+			$(".ui-widget.app.calendar #calendar").removeClass("ui-helper-hidden");
+			$(".ui-widget.app.calendar #calendarlist-pnl-specialview").addClass("ui-helper-hidden");
+		} if(getWidth < 640){ // 480-
+			$(".ui-widget.app.calendar #calendar").addClass("ui-helper-hidden");
+			$(".ui-widget.app.calendar #calendarlist-pnl-specialview").removeClass("ui-helper-hidden");
+			$(".ui-btn-toggle.month").removeClass("active");
+			$(".ui-btn-toggle.list").addClass("active");
+		}
+	}
+	
+//SKELETON	
+	/* customDropdowns
+	**  Use: Sets up custom dropdown menus.
+	**  Param: openIcon, closedIcon -- The classes that you want to mark the on/off state of the menu icons (dont pass the . or #)
+	*/
+	function customDropdowns(openIcon, closedIcon){
+		$('#gb-custom-mystart .custom-dropdown').first().addClass('last-menu-item');
+		//Custom Dropdown Functionality
+		$('.custom-dropdown').click(function(e){
+		    if( $(this).hasClass("openMenu") ){
+		    	$('.dropdown', this).slideUp();
+		        $(this).removeClass("openMenu");
+		        $("> p span", this).removeClass(openIcon).addClass(closedIcon);
+		    }else{
+		    	$('.custom-dropdown.openMenu .dropdown', this).slideUp();
+		    	$('.custom-dropdown.openMenu > p span').removeClass(openIcon).addClass(closedIcon);
+		        $('.custom-dropdown.openMenu').removeClass('openMenu');
+		        $('.dropdown', this).slideDown();
+		        $(this).addClass("openMenu");
+		        $('> p span', this).removeClass(closedIcon).addClass(openIcon);
+		    }
+		})
+		.hover(function(e){},function(e){ //Out
+		    $('.dropdown', this).slideUp();
+		    $(this).removeClass("openMenu");
+		    $('> p span', this).removeClass(openIcon).addClass(closedIcon);
+		});
+	}
+	
+//SKELETON
+	/*
+	** setupBullets
+	** Use: Classes all bullets so we can manipulate their CSS and apply our font-icons
+	*/
+	function setupBullets(){
+		$('.ui-widget.app.navigation').each(function(k, v){  //go through each app
+ 			$('.ui-widget-detail ul li', this).each(function(k1, v1){ // go through every li
+				$('.bullet', this).addClass('icon-font');
+			});
+		});
+	}
+	
+	/*
+	** smoothScroll
+	** Use: This will smoothly scroll to the id that was passed to the function.
+	** Return: N/A
+	** Parameter(s): to (jQuery "#id") The id of the section to be scolled to.
+	** 		offset (int) The amount of space you want to be left on the top of the element after scroll (in a whole number int value)
+	*/
+	function smoothScroll( to, offset ){
+	    if( to.indexOf("#") < 0 ){ to = "#" + to; } //makes sure we have a valid id accessor string
+	    var target = $(to);
+	
+	    if (target.length) {
+	        $('html,body').animate({
+	            scrollTop: target.offset().top - offset //this offset accounts for the fixed menu on the top
+	        }, 800, function(){
+	            $("html, body").stop(true, false);
+	        });
+	        return false;
+	    }
+	}
+	
+	function addFramesetTranslate(){
+	    var pageURL = window.location.href.replace(/&/g, "%26");
+	    pageURL = encodeURIComponent(pageURL);
+	    
+	    var translateDropdown = 	'<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|es&hl=en&anno=0&ie=UTF8">English to Spanish</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|ar&hl=en&anno=0&ie=UTF8">English to Arabic</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|zh-CN&hl=en&anno=0&ie=UTF8">English to Chinese (Simplified)</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|zh-TW&hl=en&anno=0&ie=UTF8">English to Chinese (Traditional)</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|fr&hl=en&anno=0&ie=UTF8">English to French</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|de&hl=en&anno=0&ie=UTF8">English to German</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|it&hl=en&anno=0&ie=UTF8">English to Italian</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|ja&hl=en&anno=0&ie=UTF8">English to Japanese</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|ko&hl=en&anno=0&ie=UTF8">English to Korean</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|pt&hl=en&anno=0&ie=UTF8">English to Portuguese</a>' +
+	                                '</li>' +
+	                                '<li>' +
+	                                    '<a href="http://translate.google.com/translate?u=' + pageURL + '&langpair=en|ru&hl=en&anno=0&ie=UTF8">English to Russian</a>' +
+	                                '</li>';
+	                                
+	    var pageHost = window.location.host;
+	    if(pageHost != "translate.googleusercontent.com"){				
+	    	$(".gb-translate .dropdown").append(translateDropdown);
+	    	
+	    	$('#mobile-sidebar-links .gb-translate').click(function(e){
+	    		$('#rs-menu-btn').trigger('click');
+	    		$('.rs-menu-option.translate .rs-menu-option-bullet').trigger('click');
+	    	});
+	    }
+	}
+	
+	function megaMenuStuff(){
+		var maxChannelWidth = ((1 / $('.sw-channel-item').length) * 100) - 1;//get the percentage of space we can have to keep them inline and then subtract one from it since they arent floated.
+		maxChannelWidth = maxChannelWidth + "%";
+		
+		var maxHeight = 0;
+		
+		$('#mega-school-sections .channel-section').css('min-height', 'auto');
+		
+		$('#mega-school-sections-cont').show();
+		$('.sw-channel-item').each(function(k, v){
+			$(this).css('max-width', maxChannelWidth);
+			$('#mega-school-sections').append('<div id="channel' + (k+1) + '" class="channel-section"></div>');
+			
+			if( $('.sw-channel-dropdown > li', v).length > 0 ){
+				$('#mega-school-sections #channel' + (k+1)).append($('.sw-channel-dropdown', v));
+			}else{
+				var channelLink = $(' > a ', this);
+				$('#mega-school-sections #channel' + (k+1)).append('<ul class="sw-channel-dropdown" aria-hidden="true" role="menu"><li role="menuitem"><a href="'+ channelLink.attr('href') + '" alt="' + channelLink.text() + '"><span>' + channelLink.text() + '</span>');
+			
+			}
+			maxHeight = (($('#mega-school-sections #channel' + (k+1)).outerHeight() > maxHeight) ? $('#mega-school-sections #channel' + (k+1)).outerHeight() : maxHeight);
+			
+			$('#mega-school-sections #channel' + (k+1)).css('width', Math.floor($(v).outerWidth())); // Changed from min-width by Jeremy - Case #00199344 
+			
+		});
+		$('#mega-school-sections-cont').hide();
+		$('#mega-school-sections .channel-section').css({
+			"min-height": maxHeight,
+			"max-width": maxChannelWidth
+		});
+		
+		$(window).resize(function(){ /* Added by Jeremy - Case #00199344 */
+			$('.sw-channel-item').each(function(k, v){
+				$('#mega-school-sections #channel' + (k+1)).css('width', $(v).outerWidth());
+			});
+		});
+		
+		$('.channel-section').each(function(k, v){
+			$('> ul', v).each(function(k1, v1){
+				$(v1).css('top', ($(v).outerHeight()/2) - ($(v1).outerHeight()/2));
+			});
+		});
+		
+		//click event for channel bar moved to pgScreenSize
+		$(window).scroll(function(e){
+			if( $(window).scrollTop() >= 100){
+				$('#mega-school-sections-cont').removeClass('on-bottom');
+			}else{
+				$('#mega-school-sections-cont').addClass('on-bottom');
+			}
+		});
+	}
+	
+	/*
+		heightTarget = the target of the object you want to get heights from
+		applyTarget = the target that you want to apply the maxHeight to
+	*/
+	function sameHeights(heightTarget, applyTarget, matchChannelWidth, verticallyCenterSections){
+		if(heightTarget == '.channel-section') $('#mega-school-sections-cont').show();
+		
+		var maxHeight = 0;
+		$(applyTarget).css('min-height', 0);
+		$(heightTarget).each(function(k, v){
+			maxHeight = ( ($(v).outerHeight() > maxHeight) ? $(v).outerHeight() : maxHeight );
+		});
+		$(applyTarget).css('min-height', maxHeight);
+		
+		if( matchChannelWidth ){
+			$('.sw-channel-item').each(function(k, v){
+				$('#mega-school-sections #channel' + (k+1)).css('min-width', $(v).width());
+			});
+		}
+		
+		if( verticallyCenterSections ){
+			$('.channel-section').each(function(k, v){
+				$('> ul', v).each(function(k1, v1){
+					$(v1).css('top', ($(v).outerHeight()/2) - ($(v1).outerHeight()/2));
+				});
+			});
+		}
+		if(heightTarget == '.channel-section') $('#mega-school-sections-cont').hide();
+	}
+</script>

@@ -1,0 +1,19 @@
+District
+    Primary: #34144b   old: #2F1429
+    Secondary: #9ea0a2   old: #B68D29
+    Accent: #f4f8fc   old: #fcd576
+    
+DHS
+    Primary: #e02d31
+    Secondary: #9ea0a2   old: #857c7b
+    Accent: #f4f8fc   old: #fff0ed
+    
+HPHS
+    Primary: #005dac
+    Secondary: #9ea0a2
+    Accent: #f4f8fc
+    
+    
+NOT USED!:
+Quick Links: #5c476b
+OLD quick links (gold): #c49c3b    
